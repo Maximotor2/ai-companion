@@ -1,0 +1,23 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Secrets (never commit)
+.env
+.env.*
+secrets/
+*.key
+*.pem
+
+# Node / Python (future-proofing)
+node_modules/
+dist/
+build/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Runtime data
+data/session_*.jsonl

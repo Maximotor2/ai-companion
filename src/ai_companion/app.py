@@ -2,22 +2,17 @@ from __future__ import annotations
 
 from ai_companion.config import load_settings
 from ai_companion.logging_store import ConversationStore
-
+from ai_companion.goose_client import goose_answer
 
 def assistant_reply(user_text: str) -> str:
-    """
-    Placeholder "brain".
-    Next step: swap this with an LLM provider and/or Moltbook agent calls.
-    """
     user_text = user_text.strip()
     if not user_text:
         return "Say something and I’ll respond."
 
-    # tiny helpful behavior for now
     if user_text.lower() in {"exit", "quit"}:
-        return "Goodbye! (Type Ctrl+C if you’re stuck in a loop.)"
+        return "Goodbye."
 
-    return f"I heard: {user_text}\n\n(Next: we’ll plug in your model + Moltbook.)"
+    return goose_answer(user_text)
 
 
 def main() -> None:
