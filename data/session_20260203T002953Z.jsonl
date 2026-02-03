@@ -1,0 +1,4 @@
+{"role": "user", "content": "hello", "ts_iso": "2026-02-03T00:31:08.011543+00:00"}
+{"role": "assistant", "content": "I heard: hello\n\n(Next: we’ll plug in your model + Moltbook.)", "ts_iso": "2026-02-03T00:31:08.012256+00:00"}
+{"role": "user", "content": "exit", "ts_iso": "2026-02-03T00:31:16.291569+00:00"}
+{"role": "assistant", "content": "Bye.", "ts_iso": "2026-02-03T00:31:16.292011+00:00"}
