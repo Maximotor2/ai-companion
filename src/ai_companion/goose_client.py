@@ -4,7 +4,10 @@ import json
 import os
 import shutil
 import subprocess
-from typing import Optional
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ai_companion.config import Settings
 
 
 def _find_goose_exe() -> str:
@@ -34,7 +37,7 @@ def _find_goose_exe() -> str:
     )
 
 
-def goose_answer(prompt: str, timeout_s: int = 120) -> str:
+def goose_answer(prompt: str, settings: "Settings", timeout_s: int = 120) -> str:
     goose_exe = _find_goose_exe()
 
     cmd = [
@@ -43,9 +46,16 @@ def goose_answer(prompt: str, timeout_s: int = 120) -> str:
         "--no-session",
         "--output-format",
         "json",
-        "-t",
-        prompt,
     ]
+
+    if settings.llm_provider:
+        cmd += ["--provider", settings.llm_provider]
+    if settings.llm_model:
+        cmd += ["--model", settings.llm_model]
+    if settings.identity_system_prompt:
+        cmd += ["--system", settings.identity_system_prompt]
+
+    cmd += ["-t", prompt]
 
     proc = subprocess.run(
         cmd,
