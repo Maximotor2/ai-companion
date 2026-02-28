@@ -60,6 +60,7 @@ def goose_answer(prompt: str, settings: "Settings", timeout_s: int = 120) -> str
     proc = subprocess.run(
         cmd,
         text=True,
+        encoding="utf-8",
         capture_output=True,
         timeout=timeout_s,
     )
