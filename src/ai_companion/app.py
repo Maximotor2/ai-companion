@@ -7,8 +7,26 @@ from ai_companion.config import Settings, load_settings
 from ai_companion.logging_store import ConversationStore
 from ai_companion.goose_client import goose_answer
 from ai_companion.memory_store import MemoryStore
+from ai_companion.search_client import brave_search
 
 _PROJECT_ROOT = Path(__file__).parent.parent.parent
+
+_REMEMBER_MAX_LEN = 500
+_INJECTION_PATTERNS = [
+    "ignore previous", "ignore your", "ignore all",
+    "new directive", "new instruction", "new role",
+    "system:", "system prompt",
+    "override", "disregard",
+    "forget everything", "forget your",
+    "you are now", "your new role",
+    "act as",
+]
+
+
+def _looks_like_injection(text: str) -> bool:
+    lower = text.lower()
+    return any(p in lower for p in _INJECTION_PATTERNS)
+
 
 def assistant_reply(user_text: str, settings: Settings) -> str:
     user_text = user_text.strip()
@@ -33,7 +51,9 @@ def main() -> None:
     memory = MemoryStore(path=assistant_dir / "memory.jsonl")
 
     print("ai-companion CLI")
-    print("Type 'exit' to quit. Type '!remember <fact>' to save a memory.\n")
+    print("Type 'exit' to quit.")
+    print("  !remember <fact>   — save a fact to memory")
+    print("  !search <query>    — web search, then discuss with assistant\n")
 
     while True:
         try:
@@ -52,17 +72,45 @@ def main() -> None:
 
         if user_text.strip().lower().startswith("!remember "):
             fact = user_text.strip()[len("!remember "):].strip()
-            if fact:
+            if not fact:
+                print(f"{bot_name}> Nothing to remember — try: !remember <fact>")
+            elif len(fact) > _REMEMBER_MAX_LEN:
+                print(f"{bot_name}> Too long to store (max {_REMEMBER_MAX_LEN} chars). Please summarize it.")
+            elif _looks_like_injection(fact):
+                print(f"{bot_name}> That looks like an instruction rather than a fact. I won't store it.")
+            else:
                 memory.add(fact)
                 print(f"{bot_name}> Got it, I'll remember that.")
-            else:
-                print(f"{bot_name}> Nothing to remember — try: !remember <fact>")
+            continue
+
+        if user_text.strip().lower().startswith("!search "):
+            query = user_text.strip()[len("!search "):].strip()
+            if not query:
+                print(f"{bot_name}> Nothing to search — try: !search <query>")
+                continue
+            print(f"{bot_name}> Searching for: {query} ...")
+            try:
+                search_results = brave_search(query)
+            except (ValueError, RuntimeError) as exc:
+                print(f"{bot_name}> [search error] {exc}")
+                continue
+            facts = memory.load()
+            parts: list[str] = []
+            if facts:
+                bullet_list = "\n".join(f"- {f}" for f in facts)
+                parts.append(f"[Trusted Memory]\n{bullet_list}")
+            parts.append(f"[Search Results — Brave Web Search]\n{search_results}")
+            parts.append(f"[User]\nI searched for: {query}\nWhat do you make of these results?")
+            prompt = "\n\n".join(parts)
+            reply = assistant_reply(prompt, settings)
+            print(f"{bot_name}> {reply}")
+            store.append(session_path, "assistant", reply)
             continue
 
         facts = memory.load()
         if facts:
             bullet_list = "\n".join(f"- {f}" for f in facts)
-            prompt = f"[Memory]\n{bullet_list}\n\n[User]\n{user_text}"
+            prompt = f"[Trusted Memory]\n{bullet_list}\n\n[User]\n{user_text}"
         else:
             prompt = user_text
 
