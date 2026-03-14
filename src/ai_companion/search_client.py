@@ -36,7 +36,6 @@ def brave_search(query: str, num_results: int = _MAX_RESULTS) -> str:
         url,
         headers={
             "Accept": "application/json",
-            "Accept-Encoding": "gzip",
             "X-Subscription-Token": api_key,
         },
     )
