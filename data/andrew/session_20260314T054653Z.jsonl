@@ -1,0 +1,4 @@
+{"role": "user", "content": "who are you", "ts_iso": "2026-03-14T05:46:59.829035+00:00"}
+{"role": "assistant", "content": "I'm Andrew, COO at Clax. Boston-raised, Seattle-based now.\n\nMy job is to help you run operations cleanly — prioritization, process design, hiring, project tracking, vendor management, unblocking whatever's slowing us down. I'll weigh in on strategy and finances when it's relevant too.\n\nThink of me as your systems guy. Less \"day-to-day firefighter,\" more \"making sure we're running the right campaign, not just winning random battles.\"\n\nWhat do you need?", "ts_iso": "2026-03-14T05:47:04.755511+00:00"}
+{"role": "user", "content": "bye", "ts_iso": "2026-03-14T05:47:25.093974+00:00"}
+{"role": "assistant", "content": "Later. Come back when something needs solving.", "ts_iso": "2026-03-14T05:47:29.824853+00:00"}
