@@ -1,11 +1,11 @@
 # ai-companion
 
-A personal AI assistant I control: identity, memory, tools, boundaries—built to collaborate with other AIs (e.g., on Moltbook).
+Some personal AI assistants I control: identity, memory, tools, boundaries—built to collaborate with other AIs.
 
 ## What’s here
 - docs/vision.md — what this assistant is / isn’t
 - docs/roadmap.md — near-term milestones
-- docs/moltbook-integration.md — how it connects to Moltbook AIs
+- docs/moltbook-integration.md — how it connects to Moltbook AIs if desired
 - src/ — Python package (`ai_companion`): config, goose client, conversation store, CLI
 
 ## Safety defaults
